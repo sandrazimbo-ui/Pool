@@ -4,15 +4,12 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <title>Pool-Wochenroutine</title>
-
-<!-- PWA -->
 <link rel="manifest" href="manifest.json"/>
 <meta name="theme-color" content="#0a3355"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="Pool 🏊"/>
 <link rel="apple-touch-icon" href="icon-192.png"/>
-
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
@@ -23,125 +20,114 @@ body {
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
 }
-.bg-fx {
-  position: fixed; inset: 0; pointer-events: none; z-index: 0;
-  background:
-    radial-gradient(ellipse 70% 40% at 15% 80%, rgba(14,120,190,.2) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 30% at 85% 15%, rgba(6,182,212,.14) 0%, transparent 55%);
-}
+.bg-fx { position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background: radial-gradient(ellipse 70% 40% at 15% 80%, rgba(14,120,190,.2) 0%, transparent 60%),
+              radial-gradient(ellipse 50% 30% at 85% 15%, rgba(6,182,212,.14) 0%, transparent 55%); }
 svg.waves { position: fixed; bottom: 0; left: 0; right: 0; z-index: 0; opacity: .05; pointer-events: none; }
 .wrap { position: relative; z-index: 1; max-width: 540px; margin: 0 auto; padding: 1.75rem 1.1rem 5rem; }
 
-.header { text-align: center; margin-bottom: 1.75rem; }
+.header { text-align: center; margin-bottom: 1.5rem; }
 .header .icon { font-size: 2.8rem; }
 .header h1 { font-size: 1.75rem; font-weight: normal; color: #bae6fd; letter-spacing: .05em; margin: .2rem 0 .25rem; text-shadow: 0 2px 20px rgba(56,189,248,.4); }
 .header .sub { font-size: .82rem; color: #7dd3fc; font-style: italic; letter-spacing: .07em; }
 
-.datebadge {
-  display: flex; align-items: center; justify-content: center; gap: .75rem;
+.mode-selector { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin-bottom: 1.25rem; }
+.mode-btn { padding: .85rem .5rem; border-radius: 16px; cursor: pointer; font-family: inherit;
+  border: 2px solid rgba(125,211,252,.2); background: rgba(255,255,255,.04);
+  color: #7dd3fc; text-align: center; transition: all .2s;
+  display: flex; flex-direction: column; align-items: center; gap: .3rem; }
+.mode-btn .mode-icon { font-size: 1.8rem; }
+.mode-btn .mode-label { font-size: .82rem; letter-spacing: .04em; color: #93c5fd; }
+.mode-btn .mode-vol { font-size: .65rem; opacity: .6; }
+.mode-btn.active { border-color: #38bdf8; background: rgba(56,189,248,.15); color: #bae6fd; box-shadow: 0 0 20px rgba(56,189,248,.2); }
+.mode-btn.active .mode-label { color: #bae6fd; }
+
+.datebadge { display: flex; align-items: center; justify-content: center; gap: .75rem;
   background: rgba(255,255,255,.05); border: 1px solid rgba(125,211,252,.18);
   border-radius: 14px; padding: .65rem 1rem; margin-bottom: 1.25rem;
-  font-size: .82rem; color: #93c5fd; flex-wrap: wrap;
-}
+  font-size: .82rem; color: #93c5fd; flex-wrap: wrap; }
 .datebadge strong { color: #bae6fd; font-weight: normal; }
-.week-tag {
-  background: rgba(56,189,248,.15); border: 1px solid rgba(56,189,248,.3);
-  border-radius: 8px; padding: .12rem .55rem; font-size: .72rem; color: #38bdf8; letter-spacing: .06em;
-}
+.week-tag { background: rgba(56,189,248,.15); border: 1px solid rgba(56,189,248,.3); border-radius: 8px; padding: .12rem .55rem; font-size: .72rem; color: #38bdf8; letter-spacing: .06em; }
 
-.inputs-card {
-  background: rgba(255,255,255,.05); backdrop-filter: blur(18px);
-  border: 1px solid rgba(125,211,252,.18); border-radius: 18px;
-  padding: 1.4rem; margin-bottom: 1rem;
-}
+.inputs-card { background: rgba(255,255,255,.05); backdrop-filter: blur(18px); border: 1px solid rgba(125,211,252,.18); border-radius: 18px; padding: 1.4rem; margin-bottom: 1rem; }
 .inputs-title { font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: #7dd3fc; margin-bottom: 1rem; }
 .inputs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .85rem; }
 .input-group label { display: flex; align-items: center; gap: .3rem; font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: #7dd3fc; margin-bottom: .4rem; }
-.num-input {
-  width: 100%; padding: .6rem .8rem;
-  background: rgba(255,255,255,.07); border: 1px solid rgba(125,211,252,.22);
-  border-radius: 11px; color: #e0f2fe; font-size: 1rem; outline: none; font-family: inherit;
-  transition: border-color .2s;
-}
+.num-input { width: 100%; padding: .6rem .8rem; background: rgba(255,255,255,.07); border: 1px solid rgba(125,211,252,.22); border-radius: 11px; color: #e0f2fe; font-size: 1rem; outline: none; font-family: inherit; transition: border-color .2s; }
 .num-input:focus { border-color: rgba(56,189,248,.65); }
 .input-hint { font-size: .66rem; color: #38bdf8; margin-top: .28rem; opacity: .75; }
 
-.alert {
-  border-radius: 12px; padding: .75rem 1rem; margin-bottom: .7rem;
-  font-size: .82rem; line-height: 1.5; display: flex; align-items: flex-start; gap: .6rem;
-  animation: fadeSlide .35s ease both;
-}
+.alert { border-radius: 12px; padding: .75rem 1rem; margin-bottom: .7rem; font-size: .82rem; line-height: 1.5; display: flex; align-items: flex-start; gap: .6rem; animation: fadeSlide .35s ease both; }
 .alert-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: .05rem; }
-.alert-warn { background: rgba(239,68,68,.13); border: 1px solid rgba(239,68,68,.35); color: #fca5a5; }
-.alert-info { background: rgba(234,179,8,.1); border: 1px solid rgba(234,179,8,.3); color: #fde68a; }
-.alert-ok   { background: rgba(34,197,94,.1); border: 1px solid rgba(34,197,94,.25); color: #86efac; }
+.alert-warn  { background: rgba(239,68,68,.13);   border: 1px solid rgba(239,68,68,.35);   color: #fca5a5; }
+.alert-info  { background: rgba(234,179,8,.1);    border: 1px solid rgba(234,179,8,.3);    color: #fde68a; }
+.alert-month { background: rgba(168,85,247,.12);  border: 1px solid rgba(168,85,247,.35);  color: #d8b4fe; }
 
 .section-title { font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: #7dd3fc; margin: 1.2rem 0 .65rem; }
 
-.task {
-  background: rgba(255,255,255,.05); backdrop-filter: blur(12px);
-  border: 1px solid rgba(125,211,252,.14); border-radius: 14px;
-  padding: .95rem 1.1rem; margin-bottom: .6rem;
-  transition: all .2s; cursor: pointer;
-  animation: fadeSlide .4s ease both;
-}
+.task { background: rgba(255,255,255,.05); backdrop-filter: blur(12px); border: 1px solid rgba(125,211,252,.14); border-radius: 14px; padding: .95rem 1.1rem; margin-bottom: .6rem; transition: all .2s; cursor: pointer; animation: fadeSlide .4s ease both; }
 .task:hover { background: rgba(255,255,255,.08); }
-.task.done { background: rgba(34,197,94,.08); border-color: rgba(34,197,94,.25); opacity: .75; }
-.task.skipped { background: rgba(100,116,139,.07); border-color: rgba(100,116,139,.2); opacity: .55; }
+.task.done    { background: rgba(34,197,94,.08);      border-color: rgba(34,197,94,.25);    opacity: .75; }
+.task.skipped { background: rgba(100,116,139,.07);    border-color: rgba(100,116,139,.2);   opacity: .55; }
 .task-top { display: flex; align-items: flex-start; gap: .75rem; }
-.task-check {
-  width: 22px; height: 22px; border-radius: 7px; flex-shrink: 0; margin-top: .1rem;
-  border: 2px solid rgba(125,211,252,.35); background: rgba(255,255,255,.04);
-  display: flex; align-items: center; justify-content: center; font-size: .9rem;
-  transition: all .2s;
-}
+.task-check { width: 22px; height: 22px; border-radius: 7px; flex-shrink: 0; margin-top: .1rem; border: 2px solid rgba(125,211,252,.35); background: rgba(255,255,255,.04); display: flex; align-items: center; justify-content: center; font-size: .9rem; transition: all .2s; }
 .task.done .task-check { background: rgba(34,197,94,.3); border-color: #22c55e; }
 .task-body { flex: 1; }
 .task-name { font-size: .9rem; color: #bae6fd; font-weight: bold; margin-bottom: .2rem; display: flex; align-items: center; gap: .4rem; flex-wrap: wrap; }
-.task-name .step { font-size: .7rem; color: #38bdf8; background: rgba(56,189,248,.12); border: 1px solid rgba(56,189,248,.25); border-radius: 5px; padding: .05rem .35rem; flex-shrink:0; }
+.task-name .step { font-size: .7rem; color: #38bdf8; background: rgba(56,189,248,.12); border: 1px solid rgba(56,189,248,.25); border-radius: 5px; padding: .05rem .35rem; flex-shrink: 0; }
 .task-desc { font-size: .78rem; color: #93c5fd; line-height: 1.5; }
-.task-dose {
-  display: inline-block; margin-top: .4rem;
-  background: rgba(56,189,248,.12); border: 1px solid rgba(56,189,248,.25);
-  border-radius: 8px; padding: .15rem .6rem; font-size: .78rem; color: #7dd3fc;
-}
-.task-dose.warn { background: rgba(234,179,8,.12); border-color: rgba(234,179,8,.3); color: #fde68a; }
-.task-dose.danger { background: rgba(239,68,68,.12); border-color: rgba(239,68,68,.3); color: #fca5a5; }
-.task-dose.muted { background: rgba(100,116,139,.1); border-color: rgba(100,116,139,.2); color: #94a3b8; font-style: italic; }
-.task-dose.ok { background: rgba(34,197,94,.1); border-color: rgba(34,197,94,.25); color: #86efac; }
-.skip-btn {
-  margin-top: .5rem; font-size: .7rem; color: #475569; background: none; border: none;
-  cursor: pointer; font-family: inherit; text-decoration: underline;
-}
+.task-dose { display: inline-block; margin-top: .4rem; background: rgba(56,189,248,.12); border: 1px solid rgba(56,189,248,.25); border-radius: 8px; padding: .15rem .6rem; font-size: .78rem; color: #7dd3fc; }
+.task-dose.warn    { background: rgba(234,179,8,.12);   border-color: rgba(234,179,8,.3);   color: #fde68a; }
+.task-dose.danger  { background: rgba(239,68,68,.12);   border-color: rgba(239,68,68,.3);   color: #fca5a5; }
+.task-dose.muted   { background: rgba(100,116,139,.1);  border-color: rgba(100,116,139,.2); color: #94a3b8; font-style: italic; }
+.task-dose.ok      { background: rgba(34,197,94,.1);    border-color: rgba(34,197,94,.25);  color: #86efac; }
+.task-dose.monthly { background: rgba(168,85,247,.12);  border-color: rgba(168,85,247,.3);  color: #d8b4fe; }
+.skip-btn { margin-top: .5rem; font-size: .7rem; color: #475569; background: none; border: none; cursor: pointer; font-family: inherit; text-decoration: underline; }
 
-.progress-bar-wrap {
-  background: rgba(255,255,255,.06); border: 1px solid rgba(125,211,252,.15);
-  border-radius: 14px; padding: .85rem 1.1rem; margin-bottom: 1rem;
-  display: flex; align-items: center; gap: .85rem;
-}
+.progress-bar-wrap { background: rgba(255,255,255,.06); border: 1px solid rgba(125,211,252,.15); border-radius: 14px; padding: .85rem 1.1rem; margin-bottom: 1rem; display: flex; align-items: center; gap: .85rem; }
 .progress-track { flex: 1; height: 6px; background: rgba(255,255,255,.08); border-radius: 99px; overflow: hidden; }
 .progress-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, #0891b2, #22c55e); transition: width .4s ease; }
 .progress-txt { font-size: .78rem; color: #7dd3fc; white-space: nowrap; }
 
-.congrats {
-  text-align: center; padding: 1.5rem 1rem;
-  background: rgba(34,197,94,.08); border: 1px solid rgba(34,197,94,.25);
-  border-radius: 16px; margin-top: 1rem; animation: fadeSlide .4s ease;
-}
+.congrats { text-align: center; padding: 1.5rem 1rem; background: rgba(34,197,94,.08); border: 1px solid rgba(34,197,94,.25); border-radius: 16px; margin-top: 1rem; animation: fadeSlide .4s ease; }
 .congrats .big { font-size: 2.5rem; margin-bottom: .5rem; }
 .congrats h3 { color: #86efac; font-weight: normal; font-size: 1.1rem; margin-bottom: .35rem; }
 .congrats p { font-size: .78rem; color: #4ade80; opacity: .8; }
 
-.btn-reset-week {
-  width: 100%; margin-top: 1.1rem; padding: .75rem;
-  background: rgba(255,255,255,.04); border: 1px solid rgba(125,211,252,.18);
-  border-radius: 12px; color: #7dd3fc; font-size: .85rem; cursor: pointer;
-  font-family: inherit; transition: all .15s;
-}
+.btn-reset-week { width: 100%; margin-top: 1.1rem; padding: .75rem; background: rgba(255,255,255,.04); border: 1px solid rgba(125,211,252,.18); border-radius: 12px; color: #7dd3fc; font-size: .85rem; cursor: pointer; font-family: inherit; transition: all .15s; }
 .btn-reset-week:hover { background: rgba(255,255,255,.08); }
 
 @keyframes fadeSlide { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
 input[type=number]::-webkit-inner-spin-button { opacity: .3; }
+
+/* Report modal */
+.modal-overlay { position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,.7); backdrop-filter: blur(6px); display: flex; align-items: flex-start; justify-content: center; padding: 1rem; overflow-y: auto; animation: fadeIn .2s ease; }
+.modal-box { background: #0d2844; border: 1px solid rgba(125,211,252,.25); border-radius: 20px; width: 100%; max-width: 520px; margin: auto; box-shadow: 0 20px 60px rgba(0,0,0,.5); }
+.modal-header { display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 1.4rem 0; }
+.modal-header h2 { font-size: 1.1rem; font-weight: normal; color: #bae6fd; letter-spacing: .04em; }
+.modal-close { background: none; border: none; color: #7dd3fc; font-size: 1.4rem; cursor: pointer; padding: .2rem .5rem; border-radius: 8px; font-family: inherit; }
+.modal-close:hover { background: rgba(255,255,255,.08); }
+.modal-tabs { display: flex; gap: .5rem; padding: .9rem 1.4rem .5rem; }
+.modal-tab { padding: .3rem .85rem; border-radius: 20px; border: 1px solid rgba(125,211,252,.2); background: rgba(255,255,255,.04); color: #7dd3fc; font-size: .78rem; cursor: pointer; font-family: inherit; transition: all .15s; }
+.modal-tab.active { border-color: #38bdf8; background: rgba(56,189,248,.18); color: #bae6fd; }
+.modal-body { padding: .5rem 1.4rem 1.4rem; max-height: 70vh; overflow-y: auto; }
+.report-empty { text-align: center; padding: 2rem 1rem; color: #4b6782; font-size: .85rem; font-style: italic; }
+.report-entry { border: 1px solid rgba(125,211,252,.12); border-radius: 14px; padding: .9rem 1rem; margin-bottom: .65rem; background: rgba(255,255,255,.04); }
+.report-entry-date { font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: #38bdf8; margin-bottom: .55rem; }
+.report-vals { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem .8rem; }
+.report-val { display: flex; flex-direction: column; gap: .1rem; }
+.report-val-label { font-size: .62rem; text-transform: uppercase; letter-spacing: .08em; color: #4b7b9a; }
+.report-val-num { font-size: 1rem; color: #e0f2fe; }
+.report-val-num.ph-ok  { color: #86efac; }
+.report-val-num.ph-bad { color: #fca5a5; }
+.report-val-num.cl-ok  { color: #86efac; }
+.report-val-num.cl-bad { color: #fca5a5; }
+.report-val-num.cl-warn{ color: #fde68a; }
+.report-val-num.neutral{ color: #93c5fd; }
+.report-val-unit { font-size: .65rem; color: #4b7b9a; margin-left: .15rem; }
+.btn-report { width: 100%; margin-top: .7rem; padding: .75rem; background: rgba(56,189,248,.08); border: 1px solid rgba(56,189,248,.25); border-radius: 12px; color: #7dd3fc; font-size: .85rem; cursor: pointer; font-family: inherit; transition: all .15s; }
+.btn-report:hover { background: rgba(56,189,248,.15); }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
 </style>
 </head>
 <body>
@@ -154,9 +140,22 @@ input[type=number]::-webkit-inner-spin-button { opacity: .3; }
 
 <div class="wrap">
   <div class="header">
-    <div class="icon">🏊</div>
-    <h1>Pool-Wochenroutine</h1>
-    <p class="sub">11.5 m³ · 5 Minuten · einmal pro Woche</p>
+    <div class="icon" id="headerIcon">🏊</div>
+    <h1 id="headerTitle">Pool-Wochenroutine</h1>
+    <p class="sub" id="headerSub">Wöchentliche Pflege-Checkliste</p>
+  </div>
+
+  <div class="mode-selector">
+    <button class="mode-btn active" id="btnPool" onclick="setMode('pool')">
+      <span class="mode-icon">🏊</span>
+      <span class="mode-label">Schwimmbad</span>
+      <span class="mode-vol">11.5 m³</span>
+    </button>
+    <button class="mode-btn" id="btnWhirl" onclick="setMode('whirl')">
+      <span class="mode-icon">🌀</span>
+      <span class="mode-label">Whirlpool</span>
+      <span class="mode-vol">2.0 m³</span>
+    </button>
   </div>
 
   <div class="datebadge">
@@ -166,7 +165,7 @@ input[type=number]::-webkit-inner-spin-button { opacity: .3; }
   </div>
 
   <div class="inputs-card">
-    <div class="inputs-title">📊 Aktuelle Messwerte eingeben</div>
+    <div class="inputs-title">📊 Aktuelle Messwerte</div>
     <div class="inputs-grid">
       <div class="input-group">
         <label>⚗️ pH-Wert</label>
@@ -180,10 +179,10 @@ input[type=number]::-webkit-inner-spin-button { opacity: .3; }
       </div>
       <div class="input-group">
         <label>🌡️ Wassertemp. (°C)</label>
-        <input class="num-input" id="inWater" type="number" step="0.5" min="0" max="40" placeholder="z.B. 22" oninput="refresh()"/>
-        <div class="input-hint">Algizid ab 20 °C</div>
+        <input class="num-input" id="inWater" type="number" step="0.5" min="0" max="45" placeholder="z.B. 22" oninput="refresh()"/>
+        <div class="input-hint" id="hintWater">Algizid ab 20 °C</div>
       </div>
-      <div class="input-group">
+      <div class="input-group" id="airTempGroup">
         <label>☀️ Außentemp. (°C)</label>
         <input class="num-input" id="inAir" type="number" step="0.5" min="0" max="50" placeholder="z.B. 28" oninput="refresh()"/>
         <div class="input-hint">Schockchlor ab 30 °C</div>
@@ -203,11 +202,12 @@ input[type=number]::-webkit-inner-spin-button { opacity: .3; }
 
   <div id="congratsBox" style="display:none" class="congrats">
     <div class="big">🎉</div>
-    <h3>Wochenroutine abgeschlossen!</h3>
+    <h3>Routine abgeschlossen!</h3>
     <p id="doneTime">—</p>
   </div>
 
   <button class="btn-reset-week" onclick="resetWeek()">↺ Neue Woche starten</button>
+  <button class="btn-report" onclick="openReport()">📊 Messwert-Verlauf anzeigen</button>
 
   <div id="resetConfirm" style="display:none; margin-top:.75rem; background:rgba(239,68,68,.1); border:1px solid rgba(239,68,68,.3); border-radius:12px; padding:.85rem 1rem; align-items:center; justify-content:space-between; gap:.75rem; flex-wrap:wrap;">
     <span style="font-size:.82rem; color:#fca5a5;">Alle Eingaben und Häkchen löschen?</span>
@@ -218,16 +218,52 @@ input[type=number]::-webkit-inner-spin-button { opacity: .3; }
   </div>
 </div>
 
+<!-- Report Modal -->
+<div id="reportModal" class="modal-overlay" style="display:none" onclick="closeReportOutside(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>📊 Messwert-Verlauf</h2>
+      <button class="modal-close" onclick="closeReport()">✕</button>
+    </div>
+    <div class="modal-tabs">
+      <button class="modal-tab active" id="tabPool"  onclick="switchReportTab('pool')">🏊 Schwimmbad</button>
+      <button class="modal-tab"        id="tabWhirl" onclick="switchReportTab('whirl')">🌀 Whirlpool</button>
+    </div>
+    <div class="modal-body" id="reportBody"></div>
+  </div>
+</div>
+
 <script>
-const VOL = 11.5;
-const STORAGE_KEY = 'poolRoutine_v3';
+const VOL_POOL  = 11.5;
+const VOL_WHIRL = 2.0;
+const STORAGE_KEY = 'poolRoutine_v4';
+
 let state = load();
 
 function load() {
   try { const s = JSON.parse(localStorage.getItem(STORAGE_KEY)); if (s) return s; } catch(e) {}
-  return { tasks: {}, inputs: {}, completedAt: null };
+  return { mode:'pool',
+    pool:  { tasks:{}, inputs:{}, completedAt:null, history:[] },
+    whirl: { tasks:{}, inputs:{}, completedAt:null, calcinexDate:null, history:[] } };
 }
 function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+function cur() { return state[state.mode]; }
+
+/* ── Mode switch ── */
+function setMode(mode) {
+  state.mode = mode;
+  save();
+  document.getElementById('btnPool').classList.toggle('active', mode === 'pool');
+  document.getElementById('btnWhirl').classList.toggle('active', mode === 'whirl');
+  document.getElementById('headerIcon').textContent  = mode === 'pool' ? '🏊' : '🌀';
+  document.getElementById('headerTitle').textContent = mode === 'pool' ? 'Pool-Wochenroutine' : 'Whirlpool-Routine';
+  document.getElementById('headerSub').textContent   = mode === 'pool' ? '11.5 m³ · einmal pro Woche' : '2.0 m³ · einmal pro Woche';
+  document.getElementById('airTempGroup').style.display = mode === 'pool' ? '' : 'none';
+  document.getElementById('hintWater').textContent = mode === 'pool' ? 'Algizid ab 20 °C' : 'Whirlpool-Temperatur';
+  restoreInputs();
+  updateLastDone();
+  refresh();
+}
 
 function getInputs() {
   return {
@@ -238,67 +274,158 @@ function getInputs() {
   };
 }
 
-function buildTasks(inp) {
-  const tasks = [];
+/* ── Pool tasks ── */
+function buildPoolTasks(inp) {
+  const v = VOL_POOL, tasks = [];
 
-  // 1. Filter — immer zuerst
-  tasks.push({ id:'filter', step:'1', icon:'🔧', name:'Filter reinigen', desc:'Filterkartusche oder Sandfilter spülen. Immer zuerst – viele Probleme entstehen nur durch schmutzigen Filter!', dose:'1× wöchentlich', doseType:'info', skippable:false });
+  // Step numbers are assigned at the end based on position
+  const p = [];
 
-  // 2. Messen
-  tasks.push({ id:'measure', step:'2', icon:'📏', name:'Wasser messen', desc:'pH und Chlor mit Teststreifen oder Testgerät prüfen.', dose:'pH 7.0–7.4 · Chlor 1–1.5 mg/L', doseType:'info', skippable:false });
+  p.push({ id:'filter', icon:'🔧', name:'Filter reinigen',
+    desc:'Filterkartusche oder Sandfilter spülen. Immer zuerst – viele Probleme entstehen nur durch schmutzigen Filter!',
+    dose:'1× wöchentlich', doseType:'info', skippable:false });
 
-  // 3. pH
+  p.push({ id:'measure', icon:'📏', name:'Wasser messen',
+    desc:'pH und Chlor mit Teststreifen oder Testgerät prüfen.',
+    dose:'pH 7.0–7.4 · Chlor 1–1.5 mg/L', doseType:'info', skippable:false });
+
+  if (inp.ph === null) {
+    p.push({ id:'ph', icon:'⚗️', name:'pH korrigieren', desc:'pH-Wert eingeben um Dosierung zu berechnen.', dose:'pH-Wert oben eingeben', doseType:'muted', skippable:true });
+  } else if (inp.ph > 7.4) {
+    const g = Math.round(((inp.ph - 7.2) / 0.2) * 100 * (v / 10));
+    p.push({ id:'ph', icon:'▼', name:'pH-Minus zugeben', desc:`pH zu hoch (${inp.ph}). Granulat im Eimer auflösen, langsam ins Wasser, Filter 30 Min laufen lassen. Danach erneut messen – erst wenn pH stimmt weiter zum nächsten Schritt!`, dose:`${g} g pH-Minus`, doseType:'warn', skippable:false });
+  } else if (inp.ph < 7.0) {
+    const g = Math.round(((7.2 - inp.ph) / 0.2) * 130 * (v / 10));
+    p.push({ id:'ph', icon:'▲', name:'pH-Plus zugeben', desc:`pH zu niedrig (${inp.ph}). Im Wasser auflösen, verteilt zugeben, Filter 30 Min laufen lassen. Danach erneut messen – erst wenn pH stimmt weiter zum nächsten Schritt!`, dose:`${g} g pH-Plus`, doseType:'warn', skippable:false });
+  } else {
+    p.push({ id:'ph', icon:'✓', name:'pH-Wert i.O.', desc:`pH ${inp.ph} – kein Eingriff nötig.`, dose:'Keine Korrektur nötig', doseType:'ok', skippable:false });
+  }
+
+  if (inp.cl === null) {
+    p.push({ id:'cl', icon:'🧪', name:'Chlor kontrollieren', desc:'⚠️ Nur ausführen wenn pH im Zielbereich (7.0–7.4)! Chlor-Wert eingeben um Dosierung zu berechnen.', dose:'Chlor-Wert oben eingeben', doseType:'muted', skippable:true });
+  } else if (inp.cl < 1.0) {
+    const tabs = v <= 12 ? 1 : Math.ceil(v / 12);
+    const g = Math.round((1.2 - inp.cl) * 10 * (v / 10));
+    p.push({ id:'cl', icon:'◈', name:'Chlortablette einlegen', desc:`⚠️ Erst ausführen wenn pH korrekt nachgemessen! Chlor zu niedrig (${inp.cl} mg/L). Tablette in Dosierschwimmer – niemals direkt auf Folie legen.`, dose:`${tabs} × 200g Tablette oder ${g} g Granulat`, doseType:'warn', skippable:false });
+  } else if (inp.cl > 3.0) {
+    p.push({ id:'cl', icon:'⏸', name:'Chlor zu hoch – warten', desc:`Chlor ${inp.cl} mg/L. Keine Chemie zugeben. Erst bei <2.5 wieder schwimmen.`, dose:'Nichts zugeben', doseType:'muted', skippable:false });
+  } else {
+    p.push({ id:'cl', icon:'✓', name:'Chlor i.O.', desc:`Chlor ${inp.cl} mg/L – kein Eingriff nötig.`, dose:'Tablette prüfen / nachfüllen wenn leer', doseType:'info', skippable:false });
+  }
+
+  if (inp.air !== null && inp.air >= 30) {
+    const shockG = Math.round(150 * (v / 10));
+    const caps = (v / 10 * 0.5).toFixed(1);
+    p.push({ id:'shock', icon:'⚡', name:'Schockchlorung (Hitze!)',
+      desc:`Außentemperatur ${inp.air} °C – Chlor wird schnell abgebaut. ⚠️ Erst nach korrektem pH! Marina SOS Chlor-Schock abends direkt ins Wasser, Filter mind. 8h laufen lassen.`,
+      dose:`${caps} Dosierkappe (≈ ${shockG} g) Marina SOS`, doseType:'danger', skippable:false });
+  }
+
+  // Antikalk NACH Chlor
+  const antikalkMl = Math.round(50 * (v / 10));
+  p.push({ id:'antikalk', icon:'🧴', name:'Antikalkmittel zugeben',
+    desc:'Schützt Folie und Geräte vor Kalkablagerungen. Gleichmässig ins Wasser geben, Filter kurz laufen lassen. Nie zusammen mit Chlor zugeben!',
+    dose:`${antikalkMl} ml Antikalkmittel`, doseType:'info', skippable:false });
+
+  if (inp.water !== null && inp.water >= 20) {
+    const ml = (inp.air !== null && inp.air >= 28) ? 150 : 100;
+    p.push({ id:'algizid', icon:'🌿', name:'Algizid zugeben',
+      desc:`Wassertemperatur ${inp.water} °C – wöchentlich Algizid zur Algenprävention.${inp.air >= 28 ? ' Erhöhte Menge wegen Hitze.' : ''}`,
+      dose:`${ml} ml Algizid`, doseType:'info', skippable:false });
+  } else if (inp.water !== null) {
+    p.push({ id:'algizid', icon:'🌿', name:'Algizid (noch nicht nötig)',
+      desc:`Wassertemperatur ${inp.water} °C – Algizid erst ab 20 °C erforderlich.`,
+      dose:'Noch nicht zugeben', doseType:'muted', skippable:true });
+  } else {
+    p.push({ id:'algizid', icon:'🌿', name:'Algizid',
+      desc:'Wassertemperatur eingeben um zu prüfen ob Algizid nötig ist.',
+      dose:'Temperatur oben eingeben', doseType:'muted', skippable:true });
+  }
+
+  // Assign step numbers
+  p.forEach((t, i) => { t.step = String(i + 1); tasks.push(t); });
+  return tasks;
+}
+
+/* ── Whirlpool tasks ── */
+function buildWhirlTasks(inp) {
+  const v = VOL_WHIRL, tasks = [];
+
+  tasks.push({ id:'filter', step:'1', icon:'🔧', name:'Filter reinigen',
+    desc:'Filterkartusche reinigen oder spülen. Whirlpool-Filter verschmutzen schneller – immer zuerst!',
+    dose:'1× wöchentlich', doseType:'info', skippable:false });
+
+  tasks.push({ id:'measure', step:'2', icon:'📏', name:'Wasser messen',
+    desc:'pH und Chlor mit Teststreifen oder Testgerät prüfen.',
+    dose:'pH 7.0–7.4 · Chlor 1–1.5 mg/L', doseType:'info', skippable:false });
+
   if (inp.ph === null) {
     tasks.push({ id:'ph', step:'3', icon:'⚗️', name:'pH korrigieren', desc:'pH-Wert eingeben um Dosierung zu berechnen.', dose:'pH-Wert oben eingeben', doseType:'muted', skippable:true });
   } else if (inp.ph > 7.4) {
-    const g = Math.round(((inp.ph - 7.2) / 0.2) * 100 * (VOL / 10));
-    tasks.push({ id:'ph', step:'3', icon:'▼', name:'pH-Minus zugeben', desc:`pH zu hoch (${inp.ph}). Granulat im Eimer auflösen, langsam ins Wasser geben, Filter 30 Min laufen lassen. Danach erneut messen – erst wenn pH stimmt weiter zu Schritt 4!`, dose:`${g} g pH-Minus`, doseType:'warn', skippable:false });
+    const g = Math.round(((inp.ph - 7.2) / 0.2) * 100 * (v / 10));
+    tasks.push({ id:'ph', step:'3', icon:'▼', name:'pH-Minus zugeben',
+      desc:`pH zu hoch (${inp.ph}). In kleinem Behälter auflösen, langsam ins Wasser, Jets 10 Min laufen lassen. Danach erneut messen – erst wenn pH stimmt weiter zu Schritt 4!`,
+      dose:`${g} g pH-Minus`, doseType:'warn', skippable:false });
   } else if (inp.ph < 7.0) {
-    const g = Math.round(((7.2 - inp.ph) / 0.2) * 130 * (VOL / 10));
-    tasks.push({ id:'ph', step:'3', icon:'▲', name:'pH-Plus zugeben', desc:`pH zu niedrig (${inp.ph}). Im Wasser auflösen, verteilt zugeben, Filter 30 Min laufen lassen. Danach erneut messen – erst wenn pH stimmt weiter zu Schritt 4!`, dose:`${g} g pH-Plus`, doseType:'warn', skippable:false });
+    const g = Math.round(((7.2 - inp.ph) / 0.2) * 130 * (v / 10));
+    tasks.push({ id:'ph', step:'3', icon:'▲', name:'pH-Plus zugeben',
+      desc:`pH zu niedrig (${inp.ph}). Im Wasser auflösen, verteilt zugeben, Jets 10 Min laufen lassen. Danach erneut messen – erst wenn pH stimmt weiter zu Schritt 4!`,
+      dose:`${g} g pH-Plus`, doseType:'warn', skippable:false });
   } else {
     tasks.push({ id:'ph', step:'3', icon:'✓', name:'pH-Wert i.O.', desc:`pH ${inp.ph} – kein Eingriff nötig. Weiter mit Schritt 4.`, dose:'Keine Korrektur nötig', doseType:'ok', skippable:false });
   }
 
-  // 4. Chlor
   if (inp.cl === null) {
     tasks.push({ id:'cl', step:'4', icon:'🧪', name:'Chlor kontrollieren', desc:'⚠️ Nur ausführen wenn pH im Zielbereich (7.0–7.4)! Chlor-Wert eingeben um Dosierung zu berechnen.', dose:'Chlor-Wert oben eingeben', doseType:'muted', skippable:true });
   } else if (inp.cl < 1.0) {
-    const tabs = VOL <= 12 ? 1 : Math.ceil(VOL / 12);
-    const g = Math.round((1.2 - inp.cl) * 10 * (VOL / 10));
-    tasks.push({ id:'cl', step:'4', icon:'◈', name:'Chlortablette einlegen', desc:`⚠️ Erst ausführen wenn pH korrekt eingestellt und nachgemessen! Chlor zu niedrig (${inp.cl} mg/L). Tablette in Dosierschwimmer – niemals direkt auf Folie legen.`, dose:`${tabs} × 200g Tablette oder ${g} g Granulat`, doseType:'warn', skippable:false });
+    const g = Math.round((1.2 - inp.cl) * 10 * (v / 10));
+    tasks.push({ id:'cl', step:'4', icon:'◈', name:'Chlor nachkorrigieren',
+      desc:`⚠️ Erst nach korrektem pH! Chlor zu niedrig (${inp.cl} mg/L). Granulat in kleinem Behälter auflösen und ins Wasser geben.`,
+      dose:`${g} g Chlorgranulat`, doseType:'warn', skippable:false });
   } else if (inp.cl > 3.0) {
-    tasks.push({ id:'cl', step:'4', icon:'⏸', name:'Chlor zu hoch – warten', desc:`Chlor ${inp.cl} mg/L. Keine Chemie zugeben, Filter laufen lassen, Sonne hilft. Erst bei <2.5 wieder schwimmen.`, dose:'Nichts zugeben', doseType:'muted', skippable:false });
+    tasks.push({ id:'cl', step:'4', icon:'⏸', name:'Chlor zu hoch – warten',
+      desc:`Chlor ${inp.cl} mg/L. Keine Chemie zugeben. Erst bei <2.5 wieder benutzen.`,
+      dose:'Nichts zugeben', doseType:'muted', skippable:false });
   } else {
-    tasks.push({ id:'cl', step:'4', icon:'✓', name:'Chlor i.O.', desc:`Chlor ${inp.cl} mg/L – kein Eingriff nötig.`, dose:'Tablette prüfen / nachfüllen wenn leer', doseType:'info', skippable:false });
+    tasks.push({ id:'cl', step:'4', icon:'✓', name:'Chlor i.O.', desc:`Chlor ${inp.cl} mg/L – kein Eingriff nötig.`, dose:'Alles gut', doseType:'ok', skippable:false });
   }
 
-  // 5. Schockchlor ab 30°C Aussentemperatur — Marina SOS: ½ Kappe = 150g / 10m³
-  if (inp.air !== null && inp.air >= 30) {
-    const shockG = Math.round(150 * (VOL / 10));
-    const caps = (VOL / 10 * 0.5).toFixed(1);
-    tasks.push({ id:'shock', step:'5', icon:'⚡', name:'Schockchlorung (Hitze!)', desc:`Außentemperatur ${inp.air} °C – Chlor wird schnell abgebaut. ⚠️ Erst nach korrektem pH zugeben! Marina SOS Chlor-Schock abends direkt ins Wasser, Filter mind. 8h laufen lassen.`, dose:`${caps} Dosierkappe (≈ ${shockG} g) Marina SOS`, doseType:'danger', skippable:false });
-  }
-
-  // Algizid ab 20°C Wassertemperatur
-  const algStep = String(tasks.length + 1);
-  if (inp.water !== null && inp.water >= 20) {
-    const ml = (inp.air !== null && inp.air >= 28) ? 150 : 100;
-    tasks.push({ id:'algizid', step:algStep, icon:'🌿', name:'Algizid zugeben', desc:`Wassertemperatur ${inp.water} °C – wöchentlich Algizid zur Algenprävention.${inp.air >= 28 ? ' Erhöhte Menge wegen Hitze und Sonne.' : ''}`, dose:`${ml} ml Algizid`, doseType:'info', skippable:false });
-  } else if (inp.water !== null && inp.water < 20) {
-    tasks.push({ id:'algizid', step:algStep, icon:'🌿', name:'Algizid (noch nicht nötig)', desc:`Wassertemperatur ${inp.water} °C – Algizid erst ab 20 °C erforderlich.`, dose:'Noch nicht zugeben', doseType:'muted', skippable:true });
-  } else {
-    tasks.push({ id:'algizid', step:algStep, icon:'🌿', name:'Algizid', desc:'Wassertemperatur eingeben um zu prüfen ob Algizid nötig ist.', dose:'Temperatur oben eingeben', doseType:'muted', skippable:true });
-  }
+  // Calcinex – 1× pro Monat
+  const due = isCalcinexDue();
+  tasks.push({ id:'calcinex', step:'5', icon:'🪨',
+    name: due ? 'Calcinex zugeben (fällig!)' : 'Calcinex (noch nicht fällig)',
+    desc: due
+      ? 'Monatliche Zugabe von Calcinex gegen Kalkablagerungen an Jets, Heizung und Wänden. Nach Zugabe Jets 15 Min laufen lassen.'
+      : `Calcinex zuletzt zugegeben: ${calcinexLastText()}. Nächste Zugabe in ${calcinexDaysLeft()} Tagen.`,
+    dose: due ? '1 Kappe Calcinex' : 'Noch nicht fällig',
+    doseType: due ? 'monthly' : 'muted',
+    skippable: !due, isCalcinex: true });
 
   return tasks;
 }
 
+/* ── Calcinex helpers ── */
+function isCalcinexDue() {
+  const d = state.whirl.calcinexDate;
+  if (!d) return true;
+  return (Date.now() - new Date(d).getTime()) / 86400000 >= 28;
+}
+function calcinexLastText() {
+  const d = state.whirl.calcinexDate;
+  return d ? new Date(d).toLocaleDateString('de-CH', { day:'numeric', month:'long' }) : 'noch nie';
+}
+function calcinexDaysLeft() {
+  const d = state.whirl.calcinexDate;
+  if (!d) return 0;
+  return Math.max(0, Math.ceil(28 - (Date.now() - new Date(d).getTime()) / 86400000));
+}
+
+/* ── Render ── */
 function refresh() {
   const inp = getInputs();
-  state.inputs = inp;
+  cur().inputs = inp;
   save();
-  const tasks = buildTasks(inp);
+  const tasks = state.mode === 'pool' ? buildPoolTasks(inp) : buildWhirlTasks(inp);
   renderAlerts(inp);
   renderTasks(tasks);
   renderProgress(tasks);
@@ -307,27 +434,31 @@ function refresh() {
 function renderAlerts(inp) {
   const box = document.getElementById('alertBox');
   box.innerHTML = '';
-  if (inp.air !== null && inp.air >= 30)
-    box.innerHTML += `<div class="alert alert-warn"><span class="alert-icon">🌡️</span><div><strong>Hitzewarnung:</strong> ${inp.air} °C – Schockchlorung heute notwendig! Chlor wird bis zu 3× schneller verbraucht.</div></div>`;
-  if (inp.water !== null && inp.water >= 28)
-    box.innerHTML += `<div class="alert alert-info"><span class="alert-icon">🌊</span><div><strong>Warmes Wasser:</strong> ${inp.water} °C – erhöhte Algengefahr. Algizid-Menge auf 150 ml erhöhen.</div></div>`;
-  if (inp.cl !== null && inp.cl < 0.5)
-    box.innerHTML += `<div class="alert alert-warn"><span class="alert-icon">⚡</span><div><strong>Kritisch:</strong> Chlor nur ${inp.cl} mg/L – sofortige Schockchlorung empfohlen. Heute Abend zugeben.</div></div>`;
+  if (state.mode === 'pool') {
+    if (inp.air !== null && inp.air >= 30)
+      box.innerHTML += `<div class="alert alert-warn"><span class="alert-icon">🌡️</span><div><strong>Hitzewarnung:</strong> ${inp.air} °C – Schockchlorung heute notwendig!</div></div>`;
+    if (inp.water !== null && inp.water >= 28)
+      box.innerHTML += `<div class="alert alert-info"><span class="alert-icon">🌊</span><div><strong>Warmes Wasser:</strong> ${inp.water} °C – erhöhte Algengefahr. Algizid-Menge auf 150 ml erhöhen.</div></div>`;
+    if (inp.cl !== null && inp.cl < 0.5)
+      box.innerHTML += `<div class="alert alert-warn"><span class="alert-icon">⚡</span><div><strong>Kritisch:</strong> Chlor nur ${inp.cl} mg/L – sofortige Schockchlorung empfohlen.</div></div>`;
+  }
   if (inp.ph !== null && (inp.ph > 7.8 || inp.ph < 6.5))
     box.innerHTML += `<div class="alert alert-warn"><span class="alert-icon">⚠️</span><div><strong>pH kritisch:</strong> ${inp.ph} – dringend korrigieren. Bei diesem Wert ist Chlor unwirksam.</div></div>`;
+  if (state.mode === 'whirl' && isCalcinexDue())
+    box.innerHTML += `<div class="alert alert-month"><span class="alert-icon">🪨</span><div><strong>Calcinex fällig:</strong> Letzte Zugabe ${calcinexLastText()}. Heute 1 Kappe zugeben.</div></div>`;
 }
 
 function renderTasks(tasks) {
   const list = document.getElementById('taskList');
   list.innerHTML = '';
   tasks.forEach((t, i) => {
-    const done = state.tasks[t.id] === 'done';
-    const skipped = state.tasks[t.id] === 'skip';
+    const done    = cur().tasks[t.id] === 'done';
+    const skipped = cur().tasks[t.id] === 'skip';
     const div = document.createElement('div');
     div.className = 'task' + (done ? ' done' : skipped ? ' skipped' : '');
     div.style.animationDelay = (i * .06) + 's';
     div.innerHTML = `
-      <div class="task-top" onclick="toggleTask('${t.id}')">
+      <div class="task-top" onclick="toggleTask('${t.id}', ${!!t.isCalcinex})">
         <div class="task-check">${done ? '✓' : skipped ? '–' : ''}</div>
         <div class="task-body">
           <div class="task-name"><span class="step">${t.step}</span>${t.icon} ${t.name}</div>
@@ -335,7 +466,7 @@ function renderTasks(tasks) {
           <span class="task-dose ${t.doseType}">${t.dose}</span>
         </div>
       </div>
-      ${t.skippable && !done && !skipped ? `<button class="skip-btn" onclick="skipTask('${t.id}')">Überspringen</button>` : ''}
+      ${t.skippable && !done && !skipped ? `<button class="skip-btn" onclick="event.stopPropagation(); skipTask('${t.id}')">Überspringen</button>` : ''}
     `;
     list.appendChild(div);
   });
@@ -343,33 +474,32 @@ function renderTasks(tasks) {
 
 function renderProgress(tasks) {
   const total = tasks.length;
-  const done = tasks.filter(t => state.tasks[t.id] === 'done' || state.tasks[t.id] === 'skip').length;
-  const pct = total ? Math.round(done / total * 100) : 0;
-  document.getElementById('progressFill').style.width = pct + '%';
+  const done  = tasks.filter(t => cur().tasks[t.id] === 'done' || cur().tasks[t.id] === 'skip').length;
+  document.getElementById('progressFill').style.width = (total ? Math.round(done/total*100) : 0) + '%';
   document.getElementById('progressTxt').textContent = `${done} / ${total} erledigt`;
-  const allRequired = tasks.filter(t => !t.skippable).every(t => state.tasks[t.id] === 'done' || state.tasks[t.id] === 'skip');
+  const allRequired = tasks.filter(t => !t.skippable).every(t => cur().tasks[t.id] === 'done' || cur().tasks[t.id] === 'skip');
   const cbox = document.getElementById('congratsBox');
   if (allRequired && total > 0) {
     cbox.style.display = 'block';
     const now = new Date();
-    state.completedAt = now.toISOString();
+    cur().completedAt = now.toISOString();
     save();
     document.getElementById('doneTime').textContent = 'Abgeschlossen am ' + now.toLocaleDateString('de-CH', { weekday:'long', day:'numeric', month:'long' }) + ' um ' + now.toLocaleTimeString('de-CH', { hour:'2-digit', minute:'2-digit' });
+  } else { cbox.style.display = 'none'; }
+}
+
+function toggleTask(id, isCalcinex) {
+  if (cur().tasks[id] === 'done') {
+    delete cur().tasks[id];
+    if (isCalcinex) state.whirl.calcinexDate = null;
   } else {
-    cbox.style.display = 'none';
+    cur().tasks[id] = 'done';
+    if (isCalcinex) state.whirl.calcinexDate = new Date().toISOString();
   }
-}
-
-function toggleTask(id) {
-  state.tasks[id] = state.tasks[id] === 'done' ? undefined : 'done';
-  if (state.tasks[id] === undefined) delete state.tasks[id];
   save(); refresh();
 }
 
-function skipTask(id) {
-  state.tasks[id] = 'skip';
-  save(); refresh();
-}
+function skipTask(id) { cur().tasks[id] = 'skip'; save(); refresh(); }
 
 function resetWeek() {
   const box = document.getElementById('resetConfirm');
@@ -377,8 +507,24 @@ function resetWeek() {
 }
 
 function doReset() {
-  state = { tasks: {}, inputs: {}, completedAt: null };
-  localStorage.removeItem(STORAGE_KEY);
+  // Save current inputs to history before clearing
+  const inp = cur().inputs || {};
+  const hasData = inp.ph != null || inp.cl != null || inp.water != null || inp.air != null;
+  if (hasData) {
+    if (!cur().history) cur().history = [];
+    cur().history.unshift({
+      date: new Date().toISOString(),
+      ph:    inp.ph,
+      cl:    inp.cl,
+      water: inp.water,
+      air:   inp.air,
+      mode:  state.mode
+    });
+    // Keep max 52 entries per pool type
+    if (cur().history.length > 52) cur().history.pop();
+  }
+  cur().tasks = {}; cur().inputs = {}; cur().completedAt = null;
+  save();
   ['inPh','inCl','inWater','inAir'].forEach(id => { document.getElementById(id).value = ''; });
   document.getElementById('congratsBox').style.display = 'none';
   document.getElementById('lastDoneNote').textContent = '';
@@ -386,34 +532,83 @@ function doReset() {
   refresh();
 }
 
+function updateLastDone() {
+  const d = cur().completedAt;
+  document.getElementById('lastDoneNote').textContent = d
+    ? 'Letzte Routine: ' + new Date(d).toLocaleDateString('de-CH', { day:'numeric', month:'short' })
+    : '';
+}
+
 function initDate() {
   const now = new Date();
   document.getElementById('todayDate').textContent = now.toLocaleDateString('de-CH', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
-  const startOfYear = new Date(now.getFullYear(), 0, 1);
-  const kw = Math.ceil(((now - startOfYear) / 86400000 + startOfYear.getDay() + 1) / 7);
+  const kw = Math.ceil(((now - new Date(now.getFullYear(),0,1)) / 86400000 + new Date(now.getFullYear(),0,1).getDay() + 1) / 7);
   document.getElementById('weekTag').textContent = 'KW ' + kw;
-  if (state.completedAt) {
-    const d = new Date(state.completedAt);
-    document.getElementById('lastDoneNote').textContent = 'Letzte Routine: ' + d.toLocaleDateString('de-CH', { day:'numeric', month:'short' });
-  }
 }
 
 function restoreInputs() {
-  if (!state.inputs) return;
+  ['inPh','inCl','inWater','inAir'].forEach(id => { document.getElementById(id).value = ''; });
+  const inp = cur().inputs || {};
   const map = { ph:'inPh', cl:'inCl', water:'inWater', air:'inAir' };
-  Object.entries(map).forEach(([k, id]) => {
-    if (state.inputs[k] != null) document.getElementById(id).value = state.inputs[k];
-  });
+  Object.entries(map).forEach(([k, id]) => { if (inp[k] != null) document.getElementById(id).value = inp[k]; });
 }
 
-// Register Service Worker
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js').catch(() => {});
+/* ── Report ── */
+let reportTab = 'pool';
+
+function openReport() {
+  reportTab = state.mode;
+  document.getElementById('reportModal').style.display = 'flex';
+  document.getElementById('tabPool').classList.toggle('active', reportTab === 'pool');
+  document.getElementById('tabWhirl').classList.toggle('active', reportTab === 'whirl');
+  renderReport();
 }
+
+function closeReport() { document.getElementById('reportModal').style.display = 'none'; }
+function closeReportOutside(e) { if (e.target.id === 'reportModal') closeReport(); }
+
+function switchReportTab(tab) {
+  reportTab = tab;
+  document.getElementById('tabPool').classList.toggle('active', tab === 'pool');
+  document.getElementById('tabWhirl').classList.toggle('active', tab === 'whirl');
+  renderReport();
+}
+
+function phClass(v)  { if (v == null) return 'neutral'; return (v >= 7.0 && v <= 7.4) ? 'ph-ok' : 'ph-bad'; }
+function clClass(v)  { if (v == null) return 'neutral'; if (v >= 1.0 && v <= 3.0) return 'cl-ok'; if (v < 1.0) return 'cl-bad'; return 'cl-warn'; }
+
+function renderReport() {
+  const hist = (state[reportTab].history || []);
+  const body = document.getElementById('reportBody');
+  if (hist.length === 0) {
+    body.innerHTML = '<div class="report-empty">Noch keine Einträge vorhanden.<br>Messwerte werden beim Starten einer neuen Woche gespeichert.</div>';
+    return;
+  }
+  body.innerHTML = hist.map(e => {
+    const d = new Date(e.date);
+    const dateStr = d.toLocaleDateString('de-CH', { weekday:'short', day:'numeric', month:'long', year:'numeric' });
+    const kw = Math.ceil(((d - new Date(d.getFullYear(),0,1)) / 86400000 + new Date(d.getFullYear(),0,1).getDay() + 1) / 7);
+    const fmt = (v, unit, cls) => v != null
+      ? `<div class="report-val"><span class="report-val-label">${unit === 'mg/L' ? 'Chlor' : unit === '°C (Wasser)' ? 'Wassertemp.' : unit === '°C (Luft)' ? 'Aussentemp.' : 'pH'}</span><span class="report-val-num ${cls}">${v}<span class="report-val-unit">${unit === 'pH' ? '' : unit}</span></span></div>`
+      : `<div class="report-val"><span class="report-val-label">${unit === 'mg/L' ? 'Chlor' : unit === '°C (Wasser)' ? 'Wassertemp.' : unit === '°C (Luft)' ? 'Aussentemp.' : 'pH'}</span><span class="report-val-num neutral">—</span></div>`;
+    return `<div class="report-entry">
+      <div class="report-entry-date">KW ${kw} · ${dateStr}</div>
+      <div class="report-vals">
+        ${fmt(e.ph,    'pH',          phClass(e.ph))}
+        ${fmt(e.cl,    'mg/L',        clClass(e.cl))}
+        ${fmt(e.water, '°C (Wasser)', 'neutral')}
+        ${reportTab === 'pool' && e.air != null ? fmt(e.air, '°C (Luft)', 'neutral') : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+
+
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
 
 initDate();
-restoreInputs();
-refresh();
+setMode(state.mode || 'pool');
 </script>
 </body>
 </html>
